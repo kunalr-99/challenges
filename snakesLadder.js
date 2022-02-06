@@ -11,7 +11,6 @@ let diceRoll,
 
 playerScore = 0;
 snakes = [13, 22, 34, 41, 48];
-// 7, 13, 16, 22, 24, 34, 36, 41, 48
 snakesDown = [4, 15, 20, 30, 9];
 ladders = [36, 24, 16, 7];
 laddersUp = [42, 31, 46, 11];
