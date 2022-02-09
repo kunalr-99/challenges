@@ -6,6 +6,7 @@ let diceRoll,
     ladders,
     laddersUp,
     ladderClimb,
+    crucial,
     index,
     remainder;
 
@@ -19,6 +20,9 @@ index = 0;
 const rollDice = () => {
     // Rolling the dice
     diceRoll = Math.trunc(Math.random() * 6 + 1);
+    console.log(`It was a ${diceRoll}`);
+    snakeBite = false;
+    // ladderClimb = false;
 
     // Checking whether it's a new game or not
     if (playerScore === 0) {
@@ -31,46 +35,44 @@ const rollDice = () => {
             // Update player score
             scoreNormal();
         }
-    } else if (snakes.includes(playerScore)) {
-        // Checking for snake-bites
-        snakeBite = scoreLevelUpdate(snakes, snakesDown);
-    } else if (ladders.includes(playerScore)) {
-        // Cheking for ladder climbs
-        ladderClimb = scoreLevelUpdate(ladders, laddersUp);
-    } else if (playerScore >= 44 && playerScore < 50) {
-        // Checking threshold diceRolls at the end to avoid overtaking top-limit
-        remainder = 50 - playerScore;
-        if (diceRoll > remainder) {
-            console.log(
-                `${playerScore}: Limit exeeded over 50, try a number lower than ${remainder}`
-            );
-        } else {
-            playerScore += diceRoll;
-            if (playerScore === 50) {
-                // Display player wins!!
-                playerScore = 0;
-                console.log(`Congratulations!! You have won <3`);
-                alert("Start a new game!");
+    } else {
+        if (playerScore >= 44 && playerScore < 50) {
+            // Checking threshold diceRolls at the end to avoid overtaking top-limit
+            remainder = 50 - playerScore;
+            if (diceRoll > remainder) {
+                console.log(
+                    `${playerScore}: Limit exeeded over 50, try a number lower than ${
+                        remainder + 1
+                    }`
+                );
             } else {
-                // Update player score
-                console.log(playerScore);
+                scoreNormal();
+                if (playerScore === 50) {
+                    // Display player wins!!
+                    playerScore = 0;
+                    console.log(`Congratulations!! You have won <3`);
+                    alert("Start a new game!");
+                } else {
+                    if (snakes.includes(playerScore)) {
+                        // Checking for snake-bites
+                        snakeBite = true;
+                        scoreLevelUpdate(snakes, snakesDown);
+                    }
+                }
+            }
+        } else {
+            scoreNormal();
+            if (snakes.includes(playerScore)) {
+                // Checking for snake-bites
+                snakeBite = true;
+                scoreLevelUpdate(snakes, snakesDown);
+            } else if (ladders.includes(playerScore)) {
+                // Cheking for ladder climbs
+                scoreLevelUpdate(ladders, laddersUp);
+            } else {
+                return;
             }
         }
-    } else {
-        // Update playerscore
-        scoreNormal();
-    }
-
-    if (snakeBite || ladderClimb) {
-        console.log(
-            `Your new score is ${playerScore} because of ${
-                snakeBite ? "Snake Bite" : "Ladder Climb"
-            }`
-        );
-        snakeBite = false;
-        ladderClimb = false;
-    } else {
-        console.log(`It was a ${diceRoll}`);
     }
 };
 
@@ -84,6 +86,9 @@ const scoreNormal = () => {
 const scoreLevelUpdate = (current, update) => {
     index = current.indexOf(playerScore);
     playerScore = update[index];
-    console.log(playerScore);
-    return true;
+    console.log(
+        `Your new score is ${playerScore} because of ${
+            snakeBite ? "Snake Bite" : "Ladder Climb"
+        }`
+    );
 };
